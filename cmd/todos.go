@@ -3,9 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
+	"todo/cli"
+	"todo/storage"
 
 	"github.com/aquasecurity/table"
 )
@@ -19,7 +23,7 @@ type Todo struct {
 
 type Todos []Todo
 
-func (todos *Todos) add(title string) {
+func (todos *Todos) Add(title string) {
 	todo := Todo{
 		Title:       title,
 		Completed:   false,
@@ -40,7 +44,7 @@ func (todos *Todos) validateIndex(index int) error {
 	return nil
 }
 
-func (todos *Todos) delete(index int) error {
+func (todos *Todos) Delete(index int) error {
 	t := *todos
 
 	if err := t.validateIndex(index); err != nil {
@@ -52,7 +56,7 @@ func (todos *Todos) delete(index int) error {
 	return nil
 }
 
-func (todos *Todos) toggle(index int) error {
+func (todos *Todos) Toggle(index int) error {
 	t := *todos
 
 	if err := t.validateIndex(index); err != nil {
@@ -71,7 +75,7 @@ func (todos *Todos) toggle(index int) error {
 	return nil
 }
 
-func (todos *Todos) edit(index int, title string) error {
+func (todos *Todos) Edit(index int, title string) error {
 	t := *todos
 
 	if err := t.validateIndex(index); err != nil {
@@ -83,7 +87,7 @@ func (todos *Todos) edit(index int, title string) error {
 	return nil
 }
 
-func (todos *Todos) print() {
+func (todos *Todos) Print() {
 	table := table.New(os.Stdout)
 	table.SetRowLines(false)
 	table.SetHeaders("#", "Title", "Completed", "Created At", "Completed At")
@@ -102,4 +106,21 @@ func (todos *Todos) print() {
 	}
 
 	table.Render()
+}
+
+func main() {
+	todos_storage_path := os.Getenv("TODOS_STORAGE")
+	if todos_storage_path == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			log.Fatal(err)
+		}
+		todos_storage_path = filepath.Join(home, ".todos.json")
+	}
+	todos_storage := storage.NewStorage[Todos](todos_storage_path)
+	todos := &Todos{}
+	todos_storage.Load(todos)
+	cmdFlags := cli.NewCmdFlags()
+	cmdFlags.Execute(todos)
+	todos_storage.Save(*todos)
 }
