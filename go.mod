@@ -1,4 +1,4 @@
-module todo
+module todos
 
 go 1.22.3
 
