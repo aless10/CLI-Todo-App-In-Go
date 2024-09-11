@@ -3,12 +3,15 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/aquasecurity/table"
+	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 	"todo/cli"
 	"todo/storage"
+
+	"github.com/aquasecurity/table"
 )
 
 type Todo struct {
@@ -108,7 +111,11 @@ func (todos *Todos) Print() {
 func main() {
 	todos_storage_path := os.Getenv("TODOS_STORAGE")
 	if todos_storage_path == "" {
-		todos_storage_path = "~/.todos.json"
+		home, err := os.UserHomeDir()
+		if err != nil {
+			log.Fatal(err)
+		}
+		todos_storage_path = filepath.Join(home, ".todos.json")
 	}
 	todos_storage := storage.NewStorage[Todos](todos_storage_path)
 	todos := &Todos{}
