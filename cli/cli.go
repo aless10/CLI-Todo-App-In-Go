@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"flag"
@@ -16,6 +16,14 @@ type CmdFlags struct {
 	List   bool
 }
 
+type ITodos interface {
+	Print()
+	Add(string)
+	Edit(int, string) error
+	Toggle(int) error
+	Delete(int) error
+}
+
 func NewCmdFlags() *CmdFlags {
 	cf := CmdFlags{}
 
@@ -30,12 +38,12 @@ func NewCmdFlags() *CmdFlags {
 	return &cf
 }
 
-func (cf *CmdFlags) Execute(todos *Todos) {
+func (cf *CmdFlags) Execute(todos ITodos) {
 	switch {
 	case cf.List:
-		todos.print()
+		todos.Print()
 	case cf.Add != "":
-		todos.add(cf.Add)
+		todos.Add(cf.Add)
 	case cf.Edit != "":
 		parts := strings.SplitN(cf.Edit, ":", 2)
 		if len(parts) != 2 {
@@ -50,13 +58,13 @@ func (cf *CmdFlags) Execute(todos *Todos) {
 			os.Exit(1)
 		}
 
-		todos.edit(index, parts[1])
+		todos.Edit(index, parts[1])
 
 	case cf.Toggle != -1:
-		todos.toggle(cf.Toggle)
+		todos.Toggle(cf.Toggle)
 
 	case cf.Del != -1:
-		todos.delete(cf.Del)
+		todos.Delete(cf.Del)
 
 	default:
 		fmt.Println("Invalid command")
