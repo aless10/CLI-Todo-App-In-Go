@@ -1,12 +1,12 @@
 package main
 
 import (
+	"github.com/aless10/CLI-Todo-App-In-Go/cli"
+	"github.com/aless10/CLI-Todo-App-In-Go/cmd"
+	"github.com/aless10/CLI-Todo-App-In-Go/storage"
 	"log"
 	"os"
 	"path/filepath"
-	"todos/cli"
-	"todos/cmd"
-	"todos/storage"
 )
 
 func main() {
