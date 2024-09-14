@@ -2,7 +2,6 @@
 
 TAG=""
 
-
 # Parse command-line arguments
 while getopts ":t:" opt; do
   case ${opt} in
@@ -12,7 +11,7 @@ while getopts ":t:" opt; do
   esac
 done
 
-VERSION="${TAG:-@latest}"
+VERSION="${TAG:-latest}"
 REPO_URL="github.com/aless10/CLI-Todo-App-In-Go"
 
 echo "Installing the todo cli app from ${REPO_URL}"
