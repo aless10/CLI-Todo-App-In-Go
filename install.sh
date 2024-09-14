@@ -1,12 +1,14 @@
-#!/bin/bash
+#!/bin/sh
 
 TAG=""
+
 
 # Parse command-line arguments
 while getopts ":t:" opt; do
   case ${opt} in
-    d ) TAG="$OPTARG";;
+    t ) TAG="$OPTARG";;
     \? ) echo "Usage: $0 -t <tag-version>"; exit 0;;
+    : ) echo "Invalid option: -$OPTARG requires an argument"; exit 1;;
   esac
 done
 
@@ -15,7 +17,7 @@ REPO_URL="github.com/aless10/CLI-Todo-App-In-Go"
 
 echo "Installing the todo cli app from ${REPO_URL}"
 
-go install ${REPO_URL}${VERSION}
+go install ${REPO_URL}@${VERSION}
 
 echo "CLI installed" 
 
