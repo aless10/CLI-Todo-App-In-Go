@@ -1,4 +1,4 @@
-module todos
+module "github.com/aless10/CLI-Todo-App-In-Go"
 
 go 1.22.3
 
