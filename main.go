@@ -1,0 +1,27 @@
+package main
+
+import (
+	"log"
+	"os"
+	"path/filepath"
+	"todos/cli"
+	"todos/cmd"
+	"todos/storage"
+)
+
+func main() {
+	todos_storage_path := os.Getenv("TODOS_STORAGE")
+	if todos_storage_path == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			log.Fatal(err)
+		}
+		todos_storage_path = filepath.Join(home, ".todos.json")
+	}
+	todos_storage := storage.NewStorage[todos.Todos](todos_storage_path)
+	todos := &todos.Todos{}
+	todos_storage.Load(todos)
+	cmdFlags := cli.NewCmdFlags()
+	cmdFlags.Execute(todos)
+	todos_storage.Save(*todos)
+}
